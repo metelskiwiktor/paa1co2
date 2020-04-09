@@ -14,8 +14,24 @@ const init = async () => (
 module.exports = {
   init,
   createTask,
-  listTasks
+  listTasks,
+  updateTaskStatus
 }
+
+const updateTaskStatus = async (id, status) => (
+  new Promise((resolve, reject) => {
+    const generator = storage.TableUtilities.entityGenerator
+    const task = {
+      PartitionKey: generator.String('task'),
+      RowKey: generator.String(id),
+      status
+    }
+
+    service.mergeEntity(table, task, (error, result, response) => {
+      !error ? resolve() : reject()
+    })
+  })
+)
 
 const createTask = async (title) => (
   new Promise((resolve, reject) => {
@@ -23,7 +39,8 @@ const createTask = async (title) => (
     const task = {
       PartitionKey: generator.String('task'),
       RowKey: generator.String(uuid.v4()),
-      title
+      title,
+      status: 'open'
     }
 
     service.insertEntity(table, task, (error, result, response) => {
@@ -31,6 +48,18 @@ const createTask = async (title) => (
     })
   })
 )
+
+
+
+
+
+
+
+
+
+
+
+
 
 const listTasks = async () => (
   new Promise((resolve, reject) => {
