@@ -8,6 +8,7 @@ const logger = require('koa-logger')
 
 const index = require('./routes/index')
 const users = require('./routes/users')
+const tasks = require('./routes/tasks')
 
 require('./store').init()
 
@@ -26,6 +27,7 @@ app.use(views(__dirname + '/views', {
   extension: 'pug'
 }))
 
+app.use(tasks.routes(), tasks.allowedMethods())
 // logger
 app.use(async (ctx, next) => {
   const start = new Date()
